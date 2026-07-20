@@ -28,6 +28,31 @@ CORS(app)
 def inicio():
     return "Servidor de traducción DeepL funcionando."
 
+@app.route("/detectar", methods=["POST"])
+def detectar():
+
+    datos = request.get_json()
+    texto = datos["texto"]
+
+    respuesta = requests.post(
+        DEEPL_URL,
+        headers={
+            "Authorization": f"DeepL-Auth-Key {DEEPL_API_KEY}"
+        },
+        data={
+            "text": texto,
+            "target_lang": "ES"
+        }
+    )
+
+    datos = respuesta.json()
+
+    idioma = datos["translations"][0]["detected_source_language"]
+
+    return jsonify({
+        "idioma": idioma
+    })
+
 @app.route("/traducir", methods=["POST"])
 def traducir():
 

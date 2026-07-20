@@ -77,6 +77,8 @@ reconocimiento.onresult = async (e) => {
   console.log("Resultado:", resultado);
 
   let texto = resultado[0].transcript;
+  const idioma2 = await detectarIdioma(texto);
+  console.log("Idioma detectado:", idioma2);
 
   original.textContent = texto;
 
@@ -102,7 +104,7 @@ async function traducir(texto) {
 
     const datos = await respuesta.json();
     console.log("Datos recibidos:", datos);
-    console.log(datos.traducido);
+    console.log(datos.idioma, datos.traducido);
 
     if (datos.error) {
       throw new Error(datos.error);
@@ -113,6 +115,22 @@ async function traducir(texto) {
     console.error(error);
     traducido.textContent = "Error al traducir";
   }
+}
+
+async function detectarIdioma(texto) {
+  const respuesta = await fetch(`${apirender}/detectar`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      texto,
+    }),
+  });
+
+  const datos = await respuesta.json();
+
+  return datos.idioma;
 }
 
 // boton.onclick = () => {
