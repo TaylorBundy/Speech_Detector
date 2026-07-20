@@ -68,6 +68,7 @@ def traducir():
             }), respuesta.status_code
 
         datos_traducidos = respuesta.json()
+        traduccion = datos_traducidos["translations"][0]
         if idioma != "pt":
             return jsonify({
                 "idioma": idioma,
@@ -77,6 +78,10 @@ def traducir():
         return jsonify({
             "original": texto,
             "traducido": datos_traducidos["translations"][0]["text"]
+        })
+        return jsonify({
+            "idioma": traduccion["detected_source_language"],
+            "traducido": traduccion["text"]
         })
 
     except Exception as e:

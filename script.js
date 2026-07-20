@@ -102,6 +102,7 @@ async function traducir(texto) {
 
     const datos = await respuesta.json();
     console.log("Datos recibidos:", datos);
+    console.log(datos.traducido);
 
     if (datos.error) {
       throw new Error(datos.error);
