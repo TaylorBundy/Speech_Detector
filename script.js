@@ -1,4 +1,13 @@
 const apirender = "https://speech-detector.onrender.com";
+let microfonoActivo = false;
+const boton = document.getElementById("toggleMic");
+const estadoMic = document.getElementById("microfonoEstado");
+const estado = document.getElementById("estado");
+const idioma = document.getElementById("idioma");
+const original = document.getElementById("original");
+const traducido = document.getElementById("traducido");
+let escuchando = false;
+
 const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -6,26 +15,11 @@ const reconocimiento = new SpeechRecognition();
 
 reconocimiento.continuous = true;
 reconocimiento.interimResults = false;
+// reconocimiento.interimResults = true;
 
 // escucha directamente portugués BR
 reconocimiento.lang = "pt-BR";
 
-const estado = document.getElementById("estado");
-const idioma = document.getElementById("idioma");
-const original = document.getElementById("original");
-const traducido = document.getElementById("traducido");
-
-// document.getElementById("iniciar").onclick = () => {
-//   reconocimiento.start();
-// };
-
-// document.getElementById("detener").onclick = () => {
-//   reconocimiento.stop();
-// };
-
-// reconocimiento.onstart = () => {
-//   estado.innerHTML = "🟢 Escuchando...";
-// };
 reconocimiento.onstart = () => {
   microfonoActivo = true;
 
@@ -38,8 +32,16 @@ reconocimiento.onstart = () => {
 };
 
 // reconocimiento.onend = () => {
+//   microfonoActivo = false;
+
 //   estado.innerHTML = "🔴 Detenido";
+
+//   estadoMic.innerHTML = "🔴 Micrófono desactivado";
+//   estadoMic.className = "apagado";
+
+//   boton.innerHTML = "🎤 Activar micrófono";
 // };
+
 reconocimiento.onend = () => {
   microfonoActivo = false;
 
@@ -49,68 +51,42 @@ reconocimiento.onend = () => {
   estadoMic.className = "apagado";
 
   boton.innerHTML = "🎤 Activar micrófono";
+
+  // Si el usuario no lo apagó, volver a escuchar
+  if (escuchando) {
+    setTimeout(() => {
+      try {
+        reconocimiento.start();
+      } catch {}
+    }, 300);
+  }
 };
 
+// reconocimiento.onresult = async (e) => {
+//   let texto = e.results[e.results.length - 1][0].transcript;
+
+//   original.innerHTML = texto;
+
+//   idioma.innerHTML = "Portugués (Brasil)";
+
+//   traducir(texto);
+// };
+
 reconocimiento.onresult = async (e) => {
-  let texto = e.results[e.results.length - 1][0].transcript;
+  let resultado = e.results[e.results.length - 1];
+  console.log("Resultado:", resultado);
 
-  original.innerHTML = texto;
+  let texto = resultado[0].transcript;
 
-  idioma.innerHTML = "Portugués (Brasil)";
+  original.textContent = texto;
+
+  // Solo traducir cuando la frase terminó
+  if (!resultado.isFinal) return;
+
+  idioma.textContent = "Portugués (Brasil)";
 
   traducir(texto);
 };
-
-async function traducir2(texto) {
-  const respuesta = await fetch("https://libretranslate.com/translate", {
-    method: "POST",
-
-    headers: {
-      "Content-Type": "application/json",
-    },
-
-    body: JSON.stringify({
-      q: texto,
-      source: "pt",
-      target: "es",
-      format: "text",
-    }),
-  });
-
-  const datos = await respuesta.json();
-
-  traducido.innerHTML = datos.translatedText;
-}
-
-const DEEPL_API_KEY = "8aa6a2b5-9057-4a5e-ba23-63e3d1a4fa05:fx";
-
-async function traducir3(texto) {
-  try {
-    const respuesta = await fetch("https://api.deepl.com/v2/translate", {
-      method: "POST",
-      headers: {
-        Authorization: `DeepL-Auth-Key ${DEEPL_API_KEY}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        text: texto,
-        source_lang: "PT",
-        target_lang: "es",
-      }),
-    });
-
-    if (!respuesta.ok) {
-      throw new Error(`Error ${respuesta.status}`);
-    }
-
-    const datos = await respuesta.json();
-
-    traducido.textContent = datos.translations[0].text;
-  } catch (error) {
-    console.error("Error al traducir:", error);
-    traducido.textContent = "Error al traducir.";
-  }
-}
 
 async function traducir(texto) {
   try {
@@ -125,6 +101,7 @@ async function traducir(texto) {
     });
 
     const datos = await respuesta.json();
+    console.log("Datos recibidos:", datos);
 
     if (datos.error) {
       throw new Error(datos.error);
@@ -137,13 +114,18 @@ async function traducir(texto) {
   }
 }
 
-let microfonoActivo = false;
-
-const boton = document.getElementById("toggleMic");
-const estadoMic = document.getElementById("microfonoEstado");
+// boton.onclick = () => {
+//   if (!microfonoActivo) {
+//     reconocimiento.start();
+//   } else {
+//     reconocimiento.stop();
+//   }
+// };
 
 boton.onclick = () => {
-  if (!microfonoActivo) {
+  escuchando = !escuchando;
+
+  if (escuchando) {
     reconocimiento.start();
   } else {
     reconocimiento.stop();

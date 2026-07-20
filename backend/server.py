@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 import os
+from langdetect import detect
 
 # ===========================================
 # CONFIGURACIÓN
@@ -40,6 +41,7 @@ def traducir():
             }), 400
 
         texto = datos.get("texto", "").strip()
+        idioma = detect(texto)
 
         if texto == "":
             return jsonify({
@@ -66,6 +68,11 @@ def traducir():
             }), respuesta.status_code
 
         datos_traducidos = respuesta.json()
+        if idioma != "pt":
+            return jsonify({
+                "idioma": idioma,
+                "traducido": None
+            })
 
         return jsonify({
             "original": texto,
