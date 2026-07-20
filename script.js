@@ -202,6 +202,7 @@ function detenerMicrofono() {
   original.textContent = "";
   traducido.textContent = "";
   console.log("Micrófono detenido");
+  reproducirAudio("Sound/Detenido.webm");
   estado.title = "El micrófono se ha detenido. Puede activarlo nuevamente.";
 
   // Reactivar automáticamente después de 10 segundos
@@ -223,9 +224,9 @@ function detenerMicrofonoCompleto() {
   if (radioPortugues.checked) {
     radioPortugues.checked = false;
   }
-  async () => {
-    await reproducirAudio("Sound/Grabacion.webm");
-  };
+  //async () => {
+  reproducirAudio("Sound/Finalizado.webm");
+  //};
   console.log("Micrófono detenido completo");
   estado.title =
     "El micrófono se ha detenido completamente. Puede activarlo nuevamente.";
