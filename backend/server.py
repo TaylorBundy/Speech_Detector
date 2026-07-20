@@ -1,12 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
+import os
 
 # ===========================================
 # CONFIGURACIÓN
 # ===========================================
 
-DEEPL_API_KEY = "8aa6a2b5-9057-4a5e-ba23-63e3d1a4fa05:fx"
+DEEPL_API_KEY = os.environ.get("API_KEY")
+#DEEPL_API_KEY = "8aa6a2b5-9057-4a5e-ba23-63e3d1a4fa05:fx"
 
 DEEPL_URL = "https://api-free.deepl.com/v2/translate"
 
