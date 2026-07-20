@@ -17,9 +17,16 @@ const radioEspañol = document.querySelector("#Español");
 const radioPortugues = document.querySelector("#Portugues");
 
 document.addEventListener("DOMContentLoaded", () => {
+  radioEspañol.title = "Selecciona para escuchar en español.";
+  radioPortugues.title = "Selecciona para escuchar en portugués.";
+  if (estado.textContent === "Esperando...") {
+    estado.innerHTML = `<img class="imgEscucha" src="Images/esperando.avif">Esperando...`;
+  }
   temporizador = setTimeout(() => {
     if (radioPortugues.checked) {
       reconocimiento.lang = "pt-BR";
+    } else {
+      radioPortugues.checked = true;
     }
     if (radioEspañol.checked) {
       reconocimiento.lang = "es-ES";
@@ -28,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
       activo = true;
       iniciarMicrofono();
     }
-  }, 10000);
+  }, 5000);
 });
 
 const SpeechRecognition =
@@ -51,13 +58,14 @@ reconocimiento.interimResults = false;
 reconocimiento.onstart = () => {
   microfonoActivo = true;
 
-  estado.innerHTML = "🟢 Escuchando...";
+  estado.innerHTML = `<img class="imgEscucha" src="Images/escucha.avif">🟢 Escuchando...`;
   estado.title = "El micrófono esta activo y escuchando.";
 
   estadoMic.innerHTML = "🟢 Micrófono activado";
   estadoMic.className = "encendido";
 
   boton.innerHTML = "⛔ Desactivar micrófono";
+  boton.title = "El micrófono esta activo y escuchando. Puede desactivarlo.";
 };
 
 // reconocimiento.onend = () => {
@@ -74,12 +82,13 @@ reconocimiento.onstart = () => {
 reconocimiento.onend = () => {
   microfonoActivo = false;
 
-  estado.innerHTML = "🔴 Detenido";
+  estado.innerHTML = `<img class="imgEscucha" src="Images/noescucha.avif">🔴 Detenido`;
 
   estadoMic.innerHTML = "🔴 Micrófono desactivado";
   estadoMic.className = "apagado";
 
   boton.innerHTML = "🎤 Activar micrófono";
+  boton.title = "El micrófono esta desactivado. Puede activarlo nuevamente.";
   if (activo) {
     iniciarMicrofono();
   }
@@ -106,7 +115,7 @@ reconocimiento.onend = () => {
 
 reconocimiento.onresult = async (e) => {
   let resultado = e.results[e.results.length - 1];
-  console.log("Resultado:", resultado);
+  //console.log("Resultado:", resultado);
 
   let texto = resultado[0].transcript.toLowerCase().trim();
   if (activo) {
@@ -120,7 +129,7 @@ reconocimiento.onresult = async (e) => {
   } else {
     if (texto.includes(palabraActivacion)) {
       activo = true;
-      console.log("Activado nuevamente");
+      //console.log("Activado nuevamente");
     }
   }
   const idioma2 = await detectarIdioma(texto);
@@ -156,8 +165,8 @@ async function traducir(texto) {
     });
 
     const datos = await respuesta.json();
-    console.log("Datos recibidos:", datos);
-    console.log(datos.idioma, datos.traducido);
+    //console.log("Datos recibidos:", datos);
+    //console.log(datos.idioma, datos.traducido);
 
     if (datos.error) {
       throw new Error(datos.error);
@@ -182,8 +191,8 @@ async function detectarIdioma(texto) {
   });
 
   const datos = await respuesta.json();
-  console.log("Idioma detectado:", datos.idioma);
-  console.log(datos);
+  //console.log("Idioma detectado:", datos.idioma);
+  //console.log(datos);
 
   return datos.idioma;
 }
@@ -191,7 +200,7 @@ async function detectarIdioma(texto) {
 function iniciarMicrofono() {
   try {
     reconocimiento.start();
-    console.log("Micrófono iniciado");
+    //console.log("Micrófono iniciado");
   } catch (e) {}
 }
 
@@ -201,7 +210,7 @@ function detenerMicrofono() {
   idioma.textContent = "";
   original.textContent = "";
   traducido.textContent = "";
-  console.log("Micrófono detenido");
+  //console.log("Micrófono detenido");
   reproducirAudio("Sound/Detenido.webm");
   estado.title = "El micrófono se ha detenido. Puede activarlo nuevamente.";
 
@@ -227,7 +236,7 @@ function detenerMicrofonoCompleto() {
   //async () => {
   reproducirAudio("Sound/Finalizado.webm");
   //};
-  console.log("Micrófono detenido completo");
+  //console.log("Micrófono detenido completo");
   estado.title =
     "El micrófono se ha detenido completamente. Puede activarlo nuevamente.";
 

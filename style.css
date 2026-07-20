@@ -19,6 +19,8 @@ h1 {
 }
 
 #estado {
+  display: flex;
+  align-items: center;
   padding: 15px;
   background: #444;
   margin-bottom: 20px;
@@ -63,4 +65,8 @@ button {
   width: 100%;
   padding: 15px;
   font-size: 18px;
+}
+
+.imgEscucha {
+  width: 20px;
 }
