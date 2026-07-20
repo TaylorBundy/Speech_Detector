@@ -223,6 +223,9 @@ function detenerMicrofonoCompleto() {
   if (radioPortugues.checked) {
     radioPortugues.checked = false;
   }
+  async () => {
+    await reproducirAudio("Sound/Grabacion.webm");
+  };
   console.log("Micrófono detenido completo");
   estado.title =
     "El micrófono se ha detenido completamente. Puede activarlo nuevamente.";
@@ -253,3 +256,10 @@ boton.onclick = () => {
     }
   }
 };
+
+async function reproducirAudio(ruta) {
+  const audio = new Audio(ruta);
+  audio.play().catch((error) => {
+    console.error("No se pudo reproducir el audio:", error);
+  });
+}
