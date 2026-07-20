@@ -60,7 +60,7 @@ reconocimiento.onresult = async (e) => {
   traducir(texto);
 };
 
-async function traducir(texto) {
+async function traducir2(texto) {
   const respuesta = await fetch("https://libretranslate.com/translate", {
     method: "POST",
 
@@ -79,6 +79,36 @@ async function traducir(texto) {
   const datos = await respuesta.json();
 
   traducido.innerHTML = datos.translatedText;
+}
+
+const DEEPL_API_KEY = "8aa6a2b5-9057-4a5e-ba23-63e3d1a4fa05:fx";
+
+async function traducir(texto) {
+  try {
+    const respuesta = await fetch("https://api.deepl.com/v2/translate", {
+      method: "POST",
+      headers: {
+        Authorization: `DeepL-Auth-Key ${DEEPL_API_KEY}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        text: texto,
+        source_lang: "PT",
+        target_lang: "ES",
+      }),
+    });
+
+    if (!respuesta.ok) {
+      throw new Error(`Error ${respuesta.status}`);
+    }
+
+    const datos = await respuesta.json();
+
+    traducido.textContent = datos.translations[0].text;
+  } catch (error) {
+    console.error("Error al traducir:", error);
+    traducido.textContent = "Error al traducir.";
+  }
 }
 
 let microfonoActivo = false;
