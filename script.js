@@ -83,7 +83,7 @@ async function traducir2(texto) {
 
 const DEEPL_API_KEY = "8aa6a2b5-9057-4a5e-ba23-63e3d1a4fa05:fx";
 
-async function traducir(texto) {
+async function traducir3(texto) {
   try {
     const respuesta = await fetch("https://api.deepl.com/v2/translate", {
       method: "POST",
@@ -94,7 +94,7 @@ async function traducir(texto) {
       body: new URLSearchParams({
         text: texto,
         source_lang: "PT",
-        target_lang: "ES",
+        target_lang: "es",
       }),
     });
 
@@ -108,6 +108,31 @@ async function traducir(texto) {
   } catch (error) {
     console.error("Error al traducir:", error);
     traducido.textContent = "Error al traducir.";
+  }
+}
+
+async function traducir(texto) {
+  try {
+    const respuesta = await fetch("http://127.0.0.1:5000/traducir", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        texto: texto,
+      }),
+    });
+
+    const datos = await respuesta.json();
+
+    if (datos.error) {
+      throw new Error(datos.error);
+    }
+
+    traducido.textContent = datos.traducido;
+  } catch (error) {
+    console.error(error);
+    traducido.textContent = "Error al traducir";
   }
 }
 
