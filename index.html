@@ -14,10 +14,11 @@
       <h1>Detector Portugués BR</h1>
       <div class="radioContainer">
         <label class="labels">
-          <input type="radio" id="Español" class="radio" />Español
+          <input type="radio" id="Español" class="radio" disabled />Español
         </label>
         <label class="labels">
-          <input type="radio" id="Portugues" class="radio" />Portugués BR
+          <input type="radio" id="Portugues" class="radio" checked />Portugués
+          BR
         </label>
       </div>
 
@@ -29,8 +30,21 @@
       <h3>Texto Original</h3>
       <div id="original"></div>
 
+      <!-- <div class="traduccionContainer"> -->
       <h3>Traducción</h3>
-      <div id="traducido"></div>
+      <div class="traduccionContainer">
+        <div id="traducido"></div>
+        <div class="play-button">
+          <button
+            title="play"
+            id="btnPlay"
+            class="btnPlay"
+            onclick="leerTexto()"
+          >
+            <!-- <img src="Images/play.avif" /> -->
+          </button>
+        </div>
+      </div>
 
       <div id="microfonoEstado" class="apagado">🔴 Micrófono desactivado</div>
 

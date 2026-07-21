@@ -70,3 +70,49 @@ button {
 .imgEscucha {
   width: 20px;
 }
+.traduccionContainer {
+  position: relative;
+}
+
+.play-button .btnPlay {
+  position: relative;
+  background-color: #333333eb;
+  border: 1px solid #333;
+  border-radius: 50%;
+  background-image: url("Images/play.avif");
+  background-size: cover;
+  /* width: 100%; */
+  /* height: 100%; */
+  /* top: 0; */
+  /* bottom: 0; */
+  /* left: 30px; */
+  /* right: 60px; */
+  /* bottom: 5px; */
+  margin: 0;
+  /* padding: 0; */
+  /* right: 15px; */
+  /* padding: 20px; */
+  padding: 15px;
+}
+.play-button .btnPlay.stop {
+  background-image: url("Images/stop.avif");
+}
+.play-button {
+  position: absolute;
+  display: flex;
+  /* width: 100%; */
+  justify-content: right;
+  /* justify-content: center; */
+  /* bottom: 0; */
+  /* bottom: 20px; */
+  /* background: none; */
+  /* border: none; */
+  /* outline: none; */
+  /* opacity: 0.8; */
+  /* width: 42px; */
+  /* height: 42px; */
+  /* left: 60px; */
+  right: 5px;
+  top: 5px;
+  margin: auto;
+}
